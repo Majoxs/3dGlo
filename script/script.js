@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 /* eslint-disable indent */
 /* eslint-disable strict */
 /* eslint-disable prefer-arrow-callback */
@@ -21,28 +22,19 @@ window.addEventListener('DOMContentLoaded', function () {
             return { timeRemaining, hours, minutes, seconds };
         }
 
+        const addingZero = (number) => {
+            if (number < 10) {
+                number = '0' + number;
+            }
+            return number;
+        };
+
         function updateClock() {
             const timer = getTimeRemaining();
 
-            timerHours.textContent = timer.hours;
-            timerMinutes.textContent = timer.minutes;
-            timerSeconds.textContent = timer.seconds;
-
-            const idInterval = setInterval(updateClock, 1000);
-
-            setTimeout(function () {
-                clearInterval(idInterval);
-            }, timer.timeRemaining);
-
-            if (timer.seconds < 10) {
-                timerSeconds.textContent = '0' + timer.seconds;
-            }
-            if (timer.minutes < 10) {
-                timerMinutes.textContent = '0' + timer.minutes;
-            }
-            if (timer.hours < 10) {
-                timerHours.textContent = '0' + timer.hours;
-            }
+            timerHours.textContent = addingZero(timer.hours);
+            timerMinutes.textContent = addingZero(timer.minutes);
+            timerSeconds.textContent = addingZero(timer.seconds);
 
             if (timer.timeRemaining <= 0) {
                 timerHours.textContent = '00';
@@ -51,8 +43,9 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         }
         updateClock();
+        setInterval(updateClock, 1000);
     }
 
-    countTimer('24 august 2021');
+    countTimer('25 august 2021');
 
 });
