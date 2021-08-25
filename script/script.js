@@ -22,19 +22,14 @@ window.addEventListener('DOMContentLoaded', function () {
             return { timeRemaining, hours, minutes, seconds };
         }
 
-        const addingZero = (number) => {
-            if (number < 10) {
-                number = '0' + number;
-            }
-            return number;
-        };
+        const addZero = num => (num < 10 ? `0${num}` : num);
 
         function updateClock() {
             const timer = getTimeRemaining();
 
-            timerHours.textContent = addingZero(timer.hours);
-            timerMinutes.textContent = addingZero(timer.minutes);
-            timerSeconds.textContent = addingZero(timer.seconds);
+            timerHours.textContent = addZero(timer.hours);
+            timerMinutes.textContent = addZero(timer.minutes);
+            timerSeconds.textContent = addZero(timer.seconds);
 
             if (timer.timeRemaining <= 0) {
                 timerHours.textContent = '00';
@@ -46,7 +41,7 @@ window.addEventListener('DOMContentLoaded', function () {
         setInterval(updateClock, 1000);
     }
 
-    countTimer('25 august 2021');
+    countTimer('26 august 2021');
 
     //Menu
     const toggleMenu = () => {
@@ -54,7 +49,7 @@ window.addEventListener('DOMContentLoaded', function () {
         const btnMenu = document.querySelector('.menu'),
             menu = document.querySelector('menu'),
             closeBtn = document.querySelector('.close-btn'),
-            menuItems = menu.querySelectorAll('ul>li');
+            menuItems = menu.querySelectorAll('ul>li>a');
 
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
@@ -76,23 +71,18 @@ window.addEventListener('DOMContentLoaded', function () {
         popUpContent = popUp.querySelector('.popup-content'),
         widthUserWindow = document.documentElement.clientWidth;
 
-        let count = -57;
-        let popUpInterval;
-
-        const popUpDown = function () {
-            popUpInterval = requestAnimationFrame(popUpDown);
-            count++;
-            if (count < 31) {
-                popUpContent.style.top = count + '%';
-            } else {
-                cancelAnimationFrame(popUpInterval);
-            }
-        };
-
 
         popUpBtn.forEach((elem) => {
             elem.addEventListener('click', () => {
                 popUp.style.display = 'block';
+                let count = -57,
+                    popUpInterval;
+                const popUpDown = () => {
+                    popUpInterval = requestAnimationFrame(popUpDown);
+                    count++;
+                    count < 31 ? popUpContent.style.top = `${count}%` : cancelAnimationFrame(popUpInterval);
+                };
+
                 if (widthUserWindow > 768) {
                     popUpInterval = requestAnimationFrame(popUpDown);
                 }
@@ -105,4 +95,5 @@ window.addEventListener('DOMContentLoaded', function () {
 
     };
     togglePopUp();
+
 });
