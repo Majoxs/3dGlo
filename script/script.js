@@ -76,13 +76,15 @@ window.addEventListener('DOMContentLoaded', function () {
     const togglePopUp = () => {
 
         const popUp = document.querySelector('.popup'),
-        popUpBtn = document.querySelectorAll('.popup-btn'),
         popUpContent = popUp.querySelector('.popup-content'),
+        serviceBlock = document.getElementById('service-block'),
         widthUserWindow = document.documentElement.clientWidth;
 
+        serviceBlock.addEventListener('click', (event) => {
+            let target = event.target;
+            target = target.closest('.popup-btn');
 
-        popUpBtn.forEach((elem) => {
-            elem.addEventListener('click', () => {
+            if (target) {
                 popUp.style.display = 'block';
                 let count = -57,
                     popUpInterval;
@@ -95,7 +97,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 if (widthUserWindow > 768) {
                     popUpInterval = requestAnimationFrame(popUpDown);
                 }
-            });
+            }
         });
 
         popUp.addEventListener('click', (event) => {
