@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable arrow-parens */
 /* eslint-disable indent */
@@ -41,7 +42,7 @@ window.addEventListener('DOMContentLoaded', function () {
         updateClock();
         setInterval(updateClock, 1000);
     }
-    countTimer('28 august 2021');
+    countTimer('29 august 2021');
 
     //Menu
     const toggleMenu = () => {
@@ -259,5 +260,91 @@ window.addEventListener('DOMContentLoaded', function () {
 
     };
     slider();
+
+    //Change pictures
+    const changePictures = () => {
+
+        const command = document.getElementById('command');
+        let src;
+
+        command.addEventListener('mouseover', (event) => {
+            if (!event.target.matches('.command__photo')) {
+                return;
+            }
+            src = event.target.getAttribute('src');
+            event.target.src = event.target.dataset.img;
+        });
+        
+        command.addEventListener('mouseout', (event) => {
+            if (!event.target.matches('.command__photo')) {
+                return;
+            }
+            event.target.src = src;
+        });
+
+    };
+    changePictures();
+
+    //Validation
+    const validation = () => {
+
+        const calcBlock = document.querySelector('.calc-block'),
+            footerForm = document.getElementById('form2'),
+            nameInput = document.getElementById('form2-name'),
+            emailInput = document.getElementById('form2-email'),
+            phoneInput = document.getElementById('form2-phone'),
+            messageInput = document.getElementById('form2-message');
+
+        calcBlock.addEventListener('input', (event) => {
+            let target = event.target;
+
+            if (!target.matches('input.calc-item')) {
+                return;
+            }
+
+            target.value = target.value.replace(/\D/g, '');
+        });
+
+        footerForm.addEventListener('change', (event) => {
+            let target = event.target;
+            
+            if (!target.matches('#form2-name, #form2-email, #form2-phone, #form2-message')) {
+                return;
+            }
+
+            if (target.id === 'form2-name') {
+                nameInput.addEventListener('blur', () => {
+                    nameInput.value = nameInput.value.replace(/^[\s|-]|[^а-яё\s-]|[\s|-]$/gi, '');          
+                    nameInput.value = nameInput.value.replace(/\s{2,}/gi, ' ');
+                    nameInput.value = nameInput.value.replace(/-{2,}/gi, '-');
+                    nameInput.value = nameInput.value.replace(/[А-ЯЁ]/g, (l) => l.toLowerCase());
+                    nameInput.value = nameInput.value.replace(/( |^|-)[а-яё]/g, (u) => u.toUpperCase());
+                });
+            }
+
+            if (target.id === 'form2-email') {
+                emailInput.addEventListener('blur', () => {
+                    // eslint-disable-next-line no-useless-escape
+                    emailInput.value = emailInput.value.match(/\w+[-_\.!~\*']+?\w+@\w+\.\w{2,3}/g);
+                });
+            }
+
+            if (target.id === 'form2-phone') {
+                phoneInput.addEventListener('blur', () => {
+                    phoneInput.value = phoneInput.value.match(/\+?[78]([-()]*\d){10}/g);
+                });
+            }
+
+            if (target.id === 'form2-message') {
+                messageInput.addEventListener('blur', () => {
+                    messageInput.value = messageInput.value.replace(/^[\s|-]|[^а-яё\s-]|[\s|-]$/gi, '');          
+                    messageInput.value = messageInput.value.replace(/\s{2,}/gi, ' ');
+                    messageInput.value = messageInput.value.replace(/-{2,}/gi, '-');
+                });
+            }
+
+        });
+    };
+    validation();
 
 });
