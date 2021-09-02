@@ -330,7 +330,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 target.addEventListener('input', () => {
                     target.value = target.value.replace(/[^\d+()-]/g, '');
                 });
-                target.addEventListener('blur', () => {
+                target.addEventListener('change', () => {
                     target.value = target.value.match(/\+?[78]([-()]*\d){10}/g);
                 });
             }
@@ -401,14 +401,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
         bodyMain.addEventListener('submit', (event) => {
             event.preventDefault();
-            let target = event.target;
+            let target = event.target,
+                body = {};
 
             const errorMessage = 'Что-то пошло не так...',
-            loadMessage = 'Загрузка...',
-            successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
-
-            const statusMessage = document.createElement('div');
-            statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
+                loadMessage = 'Загрузка...',
+                successMessage = 'Спасибо! Мы скоро с вами свяжемся!',
+                statusMessage = document.createElement('div'),
+                formData = new FormData(target);
 
             const clearInput = () => {
                 const inputAll = document.querySelectorAll('input');
@@ -416,26 +416,6 @@ window.addEventListener('DOMContentLoaded', function () {
                     elem.value = '';
                 });
             };
-
-            target.addEventListener('submit', () => {
-                target.appendChild(statusMessage);
-                statusMessage.textContent = loadMessage;
-    
-                const formData = new FormData(target);
-                let body = {};
-    
-                formData.forEach((val, key) => {
-                    body[key] = val;
-                });
-                // eslint-disable-next-line no-use-before-define
-                postData(body, () => {
-                    statusMessage.textContent = successMessage;
-                }, (error) => {
-                    statusMessage.textContent = errorMessage;
-                    console.log(error);
-                });
-                clearInput();
-            });
 
             const postData = (body, outputData, errorData) => {
                 const request = new XMLHttpRequest();
@@ -457,10 +437,22 @@ window.addEventListener('DOMContentLoaded', function () {
                 request.send(JSON.stringify(body));
             };
 
+            statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
+            target.appendChild(statusMessage);
+            statusMessage.textContent = loadMessage;
+
+            formData.forEach((val, key) => {
+                body[key] = val;
+            });
             
-            
+            postData(body, () => {
+                statusMessage.textContent = successMessage;
+            }, (error) => {
+                statusMessage.textContent = errorMessage;
+                console.log(error);
+            });
+            clearInput();
         });
-  
     };
     sendForm();
 
