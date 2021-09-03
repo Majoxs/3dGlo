@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', function () {
         updateClock();
         setInterval(updateClock, 1000);
     }
-    countTimer('03 september 2021');
+    countTimer('04 september 2021');
   
     //Menu
     const toggleMenu = () => {
@@ -395,65 +395,62 @@ window.addEventListener('DOMContentLoaded', function () {
     calc(100);
 
     //send-ajax-form
-    const sendForm = () => {
+    const bodyMain = document.querySelector('body');
+    bodyMain.addEventListener('submit', sendForm);
 
-        const bodyMain = document.querySelector('body');
+    function sendForm() {
+        event.preventDefault();
+        let target = event.target,
+            body = {};
 
-        bodyMain.addEventListener('submit', (event) => {
-            event.preventDefault();
-            let target = event.target,
-                body = {};
+        const errorMessage = 'Что-то пошло не так...',
+            loadMessage = 'Загрузка...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся!',
+            statusMessage = document.createElement('div'),
+            formData = new FormData(target);
 
-            const errorMessage = 'Что-то пошло не так...',
-                loadMessage = 'Загрузка...',
-                successMessage = 'Спасибо! Мы скоро с вами свяжемся!',
-                statusMessage = document.createElement('div'),
-                formData = new FormData(target);
-
-            const clearInput = () => {
-                const inputAll = document.querySelectorAll('input');
-                inputAll.forEach((elem) => {
-                    elem.value = '';
-                });
-            };
-
-            const postData = (body, outputData, errorData) => {
-                const request = new XMLHttpRequest();
-    
-                request.addEventListener('readystatechange', () => {
-                    if (request.readyState !== 4) {
-                        return;
-                    }
-    
-                    if (request.status === 200) {
-                        outputData();
-                    } else {
-                        errorData(request.status);
-                    }
-                });
-    
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.send(JSON.stringify(body));
-            };
-
-            statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
-            target.appendChild(statusMessage);
-            statusMessage.textContent = loadMessage;
-
-            formData.forEach((val, key) => {
-                body[key] = val;
+        const clearInput = () => {
+            const inputAll = document.querySelectorAll('input');
+            inputAll.forEach((elem) => {
+                elem.value = '';
             });
-            
-            postData(body, () => {
-                statusMessage.textContent = successMessage;
-            }, (error) => {
-                statusMessage.textContent = errorMessage;
-                console.log(error);
+        };
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) {
+                    return;
+                }
+
+                if (request.status === 200) {
+                    outputData();
+                } else {
+                    errorData(request.status);
+                }
             });
-            clearInput();
+
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(body));
+        };
+
+        statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
+        target.appendChild(statusMessage);
+        statusMessage.textContent = loadMessage;
+
+        formData.forEach((val, key) => {
+            body[key] = val;
         });
-    };
-    sendForm();
+        
+        postData(body, () => {
+            statusMessage.textContent = successMessage;
+        }, (error) => {
+            statusMessage.textContent = errorMessage;
+            console.log(error);
+        });
+        clearInput();
+    }
 
 });
