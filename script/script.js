@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', function () {
         updateClock();
         setInterval(updateClock, 1000);
     }
-    countTimer('04 september 2021');
+    countTimer('05 september 2021');
   
     //Menu
     const toggleMenu = () => {
@@ -395,6 +395,7 @@ window.addEventListener('DOMContentLoaded', function () {
     calc(100);
 
     //send-ajax-form
+
     const bodyMain = document.querySelector('body');
     bodyMain.addEventListener('submit', sendForm);
 
@@ -416,25 +417,31 @@ window.addEventListener('DOMContentLoaded', function () {
             });
         };
 
-        const postData = (body, outputData, errorData) => {
-            const request = new XMLHttpRequest();
-
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState !== 4) {
-                    return;
-                }
-
-                if (request.status === 200) {
-                    outputData();
-                } else {
-                    errorData(request.status);
-                }
-            });
-
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send(JSON.stringify(body));
+        const outputData = () => {
+            statusMessage.textContent = successMessage;
         };
+
+        const errorData = (error) => {
+            statusMessage.textContent = errorMessage;
+            console.log(error);
+        };
+
+        const postData = (body) => new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+                    if (request.status === 200) {
+                        resolve();
+                    } else {
+                        reject(request.status);
+                    }
+                });
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                request.send(JSON.stringify(body));
+            });
 
         statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
         target.appendChild(statusMessage);
@@ -443,14 +450,11 @@ window.addEventListener('DOMContentLoaded', function () {
         formData.forEach((val, key) => {
             body[key] = val;
         });
-        
-        postData(body, () => {
-            statusMessage.textContent = successMessage;
-        }, (error) => {
-            statusMessage.textContent = errorMessage;
-            console.log(error);
-        });
-        clearInput();
+
+        postData(body)
+            .then(outputData)
+            .catch(errorData)
+            .finally(clearInput);
     }
 
 });
