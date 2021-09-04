@@ -395,14 +395,9 @@ window.addEventListener('DOMContentLoaded', function () {
     calc(100);
 
     //send-ajax-form
-
-    const bodyMain = document.querySelector('body');
-    bodyMain.addEventListener('submit', sendForm);
-
-    function sendForm() {
+    const sendForm = () => {
         event.preventDefault();
-        let target = event.target,
-            body = {};
+        let target = event.target;
 
         const errorMessage = 'Что-то пошло не так...',
             loadMessage = 'Загрузка...',
@@ -417,44 +412,32 @@ window.addEventListener('DOMContentLoaded', function () {
             });
         };
 
-        const outputData = () => {
-            statusMessage.textContent = successMessage;
-        };
-
-        const errorData = (error) => {
-            statusMessage.textContent = errorMessage;
-            console.log(error);
-        };
-
-        const postData = (body) => new Promise((resolve, reject) => {
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-                    if (request.readyState !== 4) {
-                        return;
-                    }
-                    if (request.status === 200) {
-                        resolve();
-                    } else {
-                        reject(request.status);
-                    }
-                });
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.send(JSON.stringify(body));
-            });
+        const postData = (formData) => fetch('./server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                body: formData
+        });
 
         statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
         target.appendChild(statusMessage);
         statusMessage.textContent = loadMessage;
 
-        formData.forEach((val, key) => {
-            body[key] = val;
-        });
-
-        postData(body)
-            .then(outputData)
-            .catch(errorData)
+        postData(formData)
+            .then((response) => {
+                if (response.status !== 200) {
+                    throw new Error('status network not 200');
+                }
+                statusMessage.textContent = successMessage;
+            })
+            .catch((error) => {
+                statusMessage.textContent = errorMessage;
+                console.error(error);
+            })
             .finally(clearInput);
-    }
+    };
+    const bodyMain = document.querySelector('body');
+    bodyMain.addEventListener('submit', sendForm);
 
 });
