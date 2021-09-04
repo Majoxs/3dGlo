@@ -415,9 +415,9 @@ window.addEventListener('DOMContentLoaded', function () {
         const postData = (formData) => fetch('./server.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 },
-                body: formData
+                body: JSON.stringify([...formData])
         });
 
         statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
