@@ -13,6 +13,9 @@ const sendForm = () => {
 		inputAll.forEach((elem) => {
 			elem.value = '';
 		});
+		setTimeout(() => {
+			statusMessage.style.display = 'none';
+		}, 4000);
 	};
 
 	const postData = (formData) => fetch('./server.php', {

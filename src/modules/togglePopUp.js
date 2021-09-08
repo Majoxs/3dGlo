@@ -2,30 +2,44 @@ const togglePopUp = () => {
 
 	const popUp = document.querySelector('.popup'),
 		popUpContent = popUp.querySelector('.popup-content'),
-		serviceBlock = document.getElementById('service-block'),
-		widthUserWindow = document.documentElement.clientWidth;
+		serviceBlock = document.getElementById('service-block');
 
-	serviceBlock.addEventListener('click', (event) => {
+	let widthUserWindow = document.documentElement.clientWidth;
+
+	window.addEventListener('resize', () => {
+		widthUserWindow = document.documentElement.clientWidth;
+	});
+
+	let count = -46,
+		startTime;
+
+	const popUpDown = () => {
+
+		let currTime = new Date().getTime(),
+			newPos = (count + ((currTime - startTime) / 200) * 30);
+
+		popUpContent.style.top = newPos + '%';
+
+		if (newPos < 31) {
+			requestAnimationFrame(popUpDown);
+		}
+	};
+
+	serviceBlock.addEventListener('click', event => {
 		let target = event.target;
 		target = target.closest('.popup-btn');
 
 		if (target) {
 			popUp.style.display = 'block';
-			let count = -57,
-				popUpInterval;
-			const popUpDown = () => {
-				popUpInterval = requestAnimationFrame(popUpDown);
-				count++;
-				count < 31 ? popUpContent.style.top = `${count}%` : cancelAnimationFrame(popUpInterval);
-			};
 
 			if (widthUserWindow > 768) {
-				popUpInterval = requestAnimationFrame(popUpDown);
+				startTime = new Date().getTime();
+				popUpDown();
 			}
 		}
 	});
 
-	popUp.addEventListener('click', (event) => {
+	popUp.addEventListener('click', event => {
 		let target = event.target;
 
 		if (target.classList.contains('popup-close')) {

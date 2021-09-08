@@ -1,7 +1,14 @@
 const validation = () => {
 
 	const calcBlock = document.querySelector('.calc-block'),
-		bodyMain = document.querySelector('body');
+		bodyMain = document.querySelector('body'),
+        inputEmail = document.getElementsByName('user_email'),
+        inputMessage = document.getElementById('form2-message');
+        
+    inputEmail.forEach((item) => {
+        item.setAttribute('required', '');
+    });
+    inputMessage.setAttribute('required', '');
 
 	calcBlock.addEventListener('input', (event) => {
 		let target = event.target;

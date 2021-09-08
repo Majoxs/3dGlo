@@ -30,6 +30,7 @@ function countTimer(deadline) {
 	}
 	updateClock();
 	setInterval(updateClock, 1000);
+
 }
 
 export default countTimer;
