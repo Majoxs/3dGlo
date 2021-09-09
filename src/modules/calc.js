@@ -28,7 +28,13 @@ const calc = (price = 100) => {
 			total = price * typeValue * squareValue * countValue * dayValue;
 		}
 
-		totalValue.textContent = total;
+		if (typeValue === '') {
+			calcSquare.value = '';
+			calcCount.value = '';
+			calcDay.value = '';
+		}
+
+		totalValue.textContent = Math.floor(total);
 	};
 
 	calcBlock.addEventListener('change', (event) => {

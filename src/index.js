@@ -12,7 +12,7 @@ import calc from './modules/calc';
 import sendForm from './modules/sendForm';
 
 //Timer
-countTimer('09 september 2021');
+countTimer('10 september 2021');
 //Menu
 toggleMenu();
 //PopUp
@@ -30,3 +30,7 @@ calc(100);
 //send-ajax-form
 const bodyMain = document.querySelector('body');
 bodyMain.addEventListener('submit', sendForm);
+
+window.addEventListener('hashchange', () => {
+	history.replaceState('', '', '/');
+});
